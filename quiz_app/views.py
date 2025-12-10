@@ -105,19 +105,19 @@ def quiz_an(request):
 
 
 def dashboard_st(request):
-
+    print(request.session.items())
     username = request.session.get('username')
+    
     if not request.session.get('teacher_id'):
         return redirect('login_teach')
     
-
+    
     teacher = Teacher.objects.get(teacher_id=request.session['teacher_id'])  
-
     try:
         teacher_info = TeacherInfo.objects.get(user_name=teacher.username)
     except TeacherInfo.DoesNotExist:
+        
         return render(request, 'dashboard_st.html', {'error': 'Teacher profile not found.'})
-
     number = range(teacher_info.no_section)
     name = teacher_info.name_teacher
 
@@ -128,12 +128,13 @@ def dashboard_st(request):
     subjects = [cls.subject for cls in classes]
 
     class_data = [{'section': cls.section, 'subject': cls.subject} for cls in classes]
-
+    username = request.session.get('username')
+    print(username)
     return render(request, 'dashboard_st.html', {
         'number': number,
         'class_data': class_data,
         'name': name,
-        'username': teacher.username
+        'username':  request.session.get('username')
 })
 
 
